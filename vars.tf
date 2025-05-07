@@ -1,0 +1,11 @@
+variable "vpc_cidr" {}
+variable "public_subnet_cidrs" {}
+variable "private_subnet_cidrs" {}
+variable "azs" {}
+variable "vpc_name" {}
+variable "env" {}
+variable "instance_type" {}
+variable "ami" {}
+variable "key_name" {}
+variable "region" {}
+variable "s3_bucket" {}
