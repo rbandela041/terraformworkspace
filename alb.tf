@@ -1,17 +1,17 @@
 resource "aws_lb" "alb" {
-  name               = "${local.vpc_name}-alb"
-  internal           = false
-  load_balancer_type = "application"
-  security_groups    = [aws_security_group.allow-all-sg.id]
-  subnets            = aws_subnet.public-subnets[*].id
-  enable_deletion_protection = true
+  name                       = "${local.vpc_name}-alb"
+  internal                   = false
+  load_balancer_type         = "application"
+  security_groups            = [aws_security_group.allow_all_sg.id]
+  subnets                    = aws_subnet.public-subnets[*].id
+  enable_deletion_protection = false
 
-  enable_http2 = true
+  enable_http2                     = true
   enable_cross_zone_load_balancing = true
 
   tags = {
     Name = "${local.vpc_name}-alb"
-    Env  = var.env
+    Env  = local.env
   }
 }
 
@@ -21,10 +21,10 @@ resource "aws_lb_listener" "alb_listener" {
   protocol          = "HTTP"
 
   default_action {
-    type = "forward"
+    type             = "forward"
     target_group_arn = aws_lb_target_group.alb_target_group.arn
-    }
   }
+}
 
 resource "aws_lb_target_group" "alb_target_group" {
   name     = "${local.vpc_name}-tg"
@@ -40,8 +40,8 @@ resource "aws_lb_target_group" "alb_target_group" {
 
 
 resource "aws_lb_target_group_attachment" "alb_target_group_attachment" {
-  count              = length(aws_instance.web_server.*.id)
-  target_group_arn   = aws_lb_target_group.alb_target_group.arn
-  target_id          = element(aws_instance.web_server.*.id, count.index)
-  port               = 80
+  count            = length(aws_instance.web_server.*.id)
+  target_group_arn = aws_lb_target_group.alb_target_group.arn
+  target_id        = element(aws_instance.web_server.*.id, count.index)
+  port             = 80
 }
